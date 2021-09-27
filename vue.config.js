@@ -3,5 +3,7 @@
  */
  module.exports = {
     // 选项...
-    publicPath: './'
+    publicPath: process.env.NODE_ENV === 'production'
+    ? '/musicPlayer.github.io/'
+    : '/'
   }
