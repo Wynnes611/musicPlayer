@@ -5,5 +5,8 @@
     // 选项...
     publicPath: process.env.NODE_ENV === 'production'
     ? '/musicPlayer.github.io/'
-    : '/'
+    : '/',
+    assetsDir:"./",
+    outputDir:'--no-clean'
+
   }
