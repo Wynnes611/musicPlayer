@@ -25,25 +25,25 @@
           v-for="hot in hots"
           :key="hot.first"
           @click="
-            searching = true;
             value = hot.first;
+            searching = true;
           "
         >
           {{ hot.first }}
         </li>
       </ul>
       <ol class="history">
-        <li v-for="h in history" :key="h[0]"  @click="
-            searching = true;
-            value = h[1];
-          ">
+        <li v-for="h in history" :key="h[0]" >
           <div class="clock">
             <img src="../assets/clock.png" alt="" />
           </div>
-          <span class="content">{{ h[1] }}</span>
-          <span class="chaBg" @click.prevent="deleRecord">
-            <img src="../assets/cha.png" alt="" />
-          </span>
+          <span class="content"  @click.prevent="
+            searching = true;
+            value = h[1];
+          ">{{ h[1] }}</span>
+          <div class="chaBg" @click.prevent="deleRecord">
+            <img src="../assets/cha.png" alt=""  @click.prevent="selectedId = h[1];" />
+          </div>
         </li>
       </ol>
     </section>
@@ -172,9 +172,8 @@ export default {
     deleRecord: function () {
       if (this.selectedId) {
         this.searching = false;
-        // console.log("111111" + this.selectedId);
         for (let i = 0; i < this.history.length; i++) {
-          if (this.history[i] === this.selectedId) {
+          if (this.history[i][1] === this.selectedId) {
             // console.log(this.history[i][1])
             window.localStorage.removeItem("history", `[${this.history[i]}]`);
             this.history.splice(i, 1);
@@ -194,7 +193,7 @@ export default {
         })
         .then((res) => {
           for (let i = 0; i < res.data.result.songs.length; i++) {
-            var songitem = res.data.result.songs[i].album.id;
+            let songitem = res.data.result.songs[i].album.id;
             this.songId.push(songitem);
           }
           this.page++;
@@ -250,6 +249,8 @@ export default {
     },
     searching: function (n) {
       if (n && this.value) {
+        this.songId = [];
+        this.searchResults = [];
         this.getSearch();
       } else {
         this.searchResults = [];
@@ -275,6 +276,7 @@ export default {
     ul {
       font-size: 14px;
       margin: 10px;
+      color: #000;
       li {
         margin-bottom: 5px;
       }
