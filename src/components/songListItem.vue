@@ -10,7 +10,8 @@
         <span v-for="n in item.song.alias" :key="n">{{ n }}</span>
       </div>
       <div class="info">
-        <em v-if="item.song.exclusive"> </em>
+        <em v-if="item.song.privilege.playMaxbr == 999000"> </em>
+        <!-- <em></em> -->
         <i
           class="artist"
           v-for="artist in item.song.artists"
@@ -44,12 +45,10 @@
       </div>
       <div class="info">
         <!-- <em v-if="item.exclusive"> </em> -->
-        <i
-          class="artist"
-          v-for="artist in item.artists"
-          :key="artist.id"
-          >{{ artist.name }}</i
-        >
+        <em v-if="item.songs.privilege.maxbr == 999000"> </em>
+        <i class="artist" v-for="artist in item.artists" :key="artist.id">{{
+          artist.name
+        }}</i>
         <b>{{ item.album.name }}</b>
       </div>
     </div>
@@ -65,7 +64,6 @@
     </div>
   </li>
 
-
   <li v-else class="song-list-item" @click="$emit('change-current-song', item)">
     <div class="num"><slot></slot></div>
     <div class="left">
@@ -73,7 +71,7 @@
         {{ item.name }}<span v-for="n in item.alias" :key="n">{{ n }}</span>
       </div>
       <div class="info">
-        <!-- <em v-if="item.song.exclusive"> </em> -->
+        <em > </em>
         <i class="artist" v-for="artist in item.ar" :key="artist.id">{{
           artist.name
         }}</i>
@@ -105,6 +103,17 @@ export default {
     },
     playing: Boolean,
   },
+  // methods: {
+  //   isPrivileges: function (id) {
+  //     for (let i = 0; i < this.privileges.length; i++) {
+  //       if (id === this.privileges[i].id && this.privileges[i].maxbr == 999000) {
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+  //     }
+  //   },
+  // },
 };
 </script>
 
@@ -115,11 +124,11 @@ export default {
   border-bottom: 1px solid rgba(175, 174, 174, 0.2);
   margin-left: 10px;
   padding: 8px 10px 1px 0;
-  .num{
+  .num {
     padding-right: 10px;
   }
-  &.lt3{
-    .num{
+  &.lt3 {
+    .num {
       color: #d43c33;
     }
   }
@@ -214,8 +223,8 @@ export default {
         }
       }
     }
-    .playing{
-      i{
+    .playing {
+      i {
         animation-play-state: running;
       }
     }

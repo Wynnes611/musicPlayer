@@ -15,6 +15,7 @@
         @keyup.enter="value && (searching = true)"
         @focus="inputing = true"
         @blur="inputing = false"
+        ref="searchBox"
       />
     </div>
     <hr class="line" />
@@ -34,6 +35,7 @@
       </ul>
       <ol class="history">
         <li v-for="h in history" :key="h[0]" >
+          <template v-if="h">
           <div class="clock">
             <img src="../assets/clock.png" alt="" />
           </div>
@@ -44,6 +46,7 @@
           <div class="chaBg" @click.prevent="deleRecord">
             <img src="../assets/cha.png" alt=""  @click.prevent="selectedId = h[1];" />
           </div>
+          </template>
         </li>
       </ol>
     </section>
@@ -112,6 +115,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import songListItem from "@/components/songListItem.vue";
 export default {
   components: {
@@ -142,7 +146,7 @@ export default {
     };
   },
   methods: {
-    scroll: function (event) {
+   scroll: _.debounce(function (event) {
       if (this.hasMore === null) {
         this.getSearch();
       }
@@ -162,7 +166,7 @@ export default {
       if (this.hasMore === false) {
         console.log("没有更多了");
       }
-    },
+    }, 1000),
     selectedIdMethod: function (h) {
       this.selectedId = h;
       if (this.selectedId) {
@@ -174,15 +178,15 @@ export default {
         this.searching = false;
         for (let i = 0; i < this.history.length; i++) {
           if (this.history[i][1] === this.selectedId) {
-            // console.log(this.history[i][1])
-            window.localStorage.removeItem("history", `[${this.history[i]}]`);
+            console.log(this.history[i][1])
             this.history.splice(i, 1);
+            window.localStorage.setItem("history",JSON.stringify(this.history));
           }
         }
         // const index = this.history.indexOf(this.selectedId);
       }
     },
-    getSearch: function () {
+    getSearch:_.debounce(function () {
       this.axios
         .get("/search", {
           params: {
@@ -212,11 +216,11 @@ export default {
       }
 
       // console.log("historyValue",this.historyValue)
-      if (this.historyValue.indexOf(this.value) === -1) {
-        this.history = [...this.history, [Date.now(), this.value]];
+      if (this.historyValue.indexOf(this.value) === -1&&this.historyValue) {
+        this.history = [...this.history, [this.value, this.value]];
         window.localStorage.setItem("history", JSON.stringify(this.history));
       }
-    },
+    }, 1000),
     clearVal: function () {
       this.value = "";
       this.searching = false;
@@ -226,13 +230,18 @@ export default {
     this.axios.get("/search/hot").then((res) => {
       this.hots = res.data.result.hots;
     });
+  
   },
+  // mounted:function(){
+  //   this.$refs.searchBox.focus();
+  // },
   watch: {
-    value: function (n) {
+    value: _.debounce(function (n) {
       if (this.inputing) {
         this.searching = false;
       }
       if (n && !this.searching) {
+        // _.throttle(
         this.axios
           .get("/search/suggest", {
             params: {
@@ -241,12 +250,15 @@ export default {
             },
           })
           .then((res) => {
-            this.suggests = res.data.result.allMatch;
-          });
+              this.suggests = res.data.result.allMatch;
+          })
+              // , 3000);
+          
+            
       } else {
         this.suggests = [];
       }
-    },
+    }, 1000),
     searching: function (n) {
       if (n && this.value) {
         this.songId = [];
@@ -257,6 +269,15 @@ export default {
       }
     },
   },
+  filters:{
+    hightKey(val,keywords){
+      let reg = new RegExp(`${keywords}`,'g');
+      if(reg.test(val)){
+        val = val.replace(reg,`<h style="color:red">${keywords}</b>`)
+      }
+      return val;
+    }
+  }
 };
 </script>
 
@@ -266,6 +287,8 @@ export default {
   padding-bottom: 50px;
   margin-top: 10px;
   overflow-x: hidden;
+  height: 100vh;
+  // overflow: hidden;
   width: 100vw;
   .searchTitle {
     font-size: 12px;

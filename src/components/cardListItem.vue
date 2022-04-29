@@ -1,5 +1,5 @@
 <template>
-  <li @click="$router.push('/playlist?id=' + item.id)" class="card-item">
+  <li @click="$router.replace('/playlist?id=' + item.id)" class="card-item">
     <div class="thumb">
       <img
         class="bg"

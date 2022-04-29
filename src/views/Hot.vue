@@ -19,28 +19,12 @@
         >{{ index + 1 }}</songListItem
       >
     </ul>
-    <ul v-if="loading">
-      <li class="loading">
-        <span
-          style="
-            margin-left: -30px;
-            padding-right: 11px;
-            vertical-align: middle;
-          "
-          >正在加载</span
-        >
-        <ul class="la-ball-newton-cradle">
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
-      </li>
-    </ul>
+    <loading v-if="loading"></loading>
   </div>
 </template>
 
 <script>
+// import _ from 'lodash'
 import songListItem from "@/components/songListItem.vue";
 export default {
   components: {
@@ -59,6 +43,7 @@ export default {
       time: "",
       hotLis: [],
       loading: false,
+      privileges:"",
     };
   },
   methods: {
@@ -72,12 +57,13 @@ export default {
         this.loading = true;
         setTimeout(() => {
           this.page++;
-          for (let i = 0; i < this.page * 10; i++) {
+          for (let i = this.page; i < this.page * 5; i++) {
             this.hotLis.push(this.detail[i]);
+            // console.log(this.page);
           }
           console.log("触底");
+          this.loading = false;
         }, 1500);
-        this.loading = false;
       }
     },
 
@@ -93,6 +79,7 @@ export default {
           })
           .then((res) => {
             this.detail = res.data.playlist.tracks;
+            this.privileges = res.data.privileges;
             this.page++;
             for (let i = 0; i < this.page * 10; i++) {
               this.hotLis.push(this.detail[i]);
@@ -107,7 +94,7 @@ export default {
             if (gapDayCount < 1) {
               this.time =
                 NMonth.toString().padStart(2, "0") +
-                "年" +
+                "月" +
                 NDate.toString().padStart(2, "0") +
                 "日" +
                 (gapDayCount.toFixed(1) * 10).toString().padStart(2, "0") +
@@ -162,109 +149,48 @@ export default {
       font-size: 11.5px;
     }
   }
-  .loading {
-    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
-      sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 50px;
-    font-size: 0.8rem;
-    font-family: monospace;
-    font-weight: bolder;
-    // background-color: #fec54f;
-    .la-ball-newton-cradle,
-    .la-ball-newton-cradle > li {
-      position: relative;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box;
-    }
-    .la-ball-newton-cradle {
-      display: block;
-      font-size: 0;
-      color: #d43c33;
-      width: 28px;
-      height: 10px;
-      margin-top: 5px;
-    }
-    .la-ball-newton-cradle.la-dark {
-      color: #333;
-    }
-    .la-ball-newton-cradle > li {
-      display: inline-block;
-      float: none;
-      background-color: currentColor;
-      border: 0 solid currentColor;
-      width: 7px;
-      height: 7px;
-      border-radius: 100%;
-    }
-    .la-ball-newton-cradle > li:first-child {
-      -webkit-transform: translateX(0%);
-      -moz-transform: translateX(0%);
-      -ms-transform: translateX(0%);
-      -o-transform: translateX(0%);
-      transform: translateX(0%);
-      -webkit-animation: ball-newton-cradle-left 1s 0s ease-out infinite;
-      -moz-animation: ball-newton-cradle-left 1s 0s ease-out infinite;
-      -o-animation: ball-newton-cradle-left 1s 0s ease-out infinite;
-      animation: ball-newton-cradle-left 1s 0s ease-out infinite;
-    }
-    .la-ball-newton-cradle > li:last-child {
-      -webkit-transform: translateX(0%);
-      -moz-transform: translateX(0%);
-      -ms-transform: translateX(0%);
-      -o-transform: translateX(0%);
-      transform: translateX(0%);
-      -webkit-animation: ball-newton-cradle-right 1s 0s ease-out infinite;
-      -moz-animation: ball-newton-cradle-right 1s 0s ease-out infinite;
-      -o-animation: ball-newton-cradle-right 1s 0s ease-out infinite;
-      animation: ball-newton-cradle-right 1s 0s ease-out infinite;
-    }
-    @keyframes ball-newton-cradle-left {
-      25% {
-        -webkit-transform: translateX(-100%);
-        -moz-transform: translateX(-100%);
-        -o-transform: translateX(-100%);
-        transform: translateX(-100%);
-        -webkit-animation-timing-function: ease-in;
-        -moz-animation-timing-function: ease-in;
-        -o-animation-timing-function: ease-in;
-        animation-timing-function: ease-in;
-      }
-      50% {
-        -webkit-transform: translateX(0%);
-        -moz-transform: translateX(0%);
-        -o-transform: translateX(0%);
-        transform: translateX(0%);
-      }
-    }
-    @keyframes ball-newton-cradle-right {
-      50% {
-        -webkit-transform: translateX(0%);
-        -moz-transform: translateX(0%);
-        -o-transform: translateX(0%);
-        transform: translateX(0%);
-      }
-      75% {
-        -webkit-transform: translateX(100%);
-        -moz-transform: translateX(100%);
-        -o-transform: translateX(100%);
-        transform: translateX(100%);
-        -webkit-animation-timing-function: ease-in;
-        -moz-animation-timing-function: ease-in;
-        -o-animation-timing-function: ease-in;
-        animation-timing-function: ease-in;
-      }
-      100% {
-        -webkit-transform: translateX(0%);
-        -moz-transform: translateX(0%);
-        -o-transform: translateX(0%);
-        transform: translateX(0%);
-      }
-    }
-  }
 }
+.loading{
+            width: 150px;
+            height: 15px;
+            margin: 0 auto;
+            margin-top:100px;
+        }
+        .loading span{
+            display: inline-block;
+            width: 15px;
+            height: 100%;
+            margin-right: 5px;
+            background: lightgreen;
+            -webkit-transform-origin: right bottom;
+            -webkit-animation: load 1s ease infinite;
+        }
+        .loading span:last-child{
+            margin-right: 0px; 
+        }
+        @-webkit-keyframes load{
+            0%{
+                opacity: 1;
+                -webkit-transform: scale(1);
+            }
+            100%{
+                opacity: 0;
+                -webkit-transform: rotate(90deg) scale(.3);
+            }
+        }
+        .loading span:nth-child(1){
+            -webkit-animation-delay:0.13s;
+        }
+        .loading span:nth-child(2){
+            -webkit-animation-delay:0.26s;
+        }
+        .loading span:nth-child(3){
+            -webkit-animation-delay:0.39s;
+        }
+        .loading span:nth-child(4){
+            -webkit-animation-delay:0.52s;
+        }
+        .loading span:nth-child(5){
+            -webkit-animation-delay:0.65s;
+        }
 </style>

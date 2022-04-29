@@ -8,9 +8,15 @@ import axios from "axios";
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
+// if(process.env.NODE_ENV === 'development'){
+//   axios.defaults.baseURL = './';
+// }else{
+//   axios.defaults.baseURL = 'http://apis.netstart.cn/music'
+// }
+
 let config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
-  baseURL:"http://apis.netstart.cn/music"
+  baseURL:"https://apis.netstart.cn/music"
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
 };

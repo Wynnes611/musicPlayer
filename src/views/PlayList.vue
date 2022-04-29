@@ -1,8 +1,11 @@
-<template>
+<template >
   <div v-if="detail" class="play-listviews">
+    <div class="backBtnBackground" @click="back()">
+      <img src="../assets/back.png" class="backBtn" />
+    </div>
     <div class="creator">
       <div class="bgContainer">
-        <img :src="detail.coverImgUrl" alt="" class="creatorBg"/>
+        <img :src="detail.coverImgUrl" alt="" class="creatorBg" />
       </div>
       <div class="creator-left">
         <img :src="detail.coverImgUrl" alt="" class="coverImg" />
@@ -73,6 +76,9 @@ export default {
           this.bgImg = res.data.playlist.coverImgUrl;
         });
     },
+    back() {
+        this.$router.push({ path: "/" });
+    },
   },
   created: function () {
     this.getPlayListDetail(this.$route.query.id);
@@ -89,47 +95,51 @@ export default {
 .play-listviews {
   margin-top: -31px;
   position: relative;
-  padding-bottom: 48px;
+  padding-bottom: 60px;
   .creator {
     position: relative;
-    height: 170px;
+    height: 230px;
     // width: 200px;
-      overflow: hidden;
-      .bgContainer{
-        position: absolute;
-        height: 600px;
-        width: 600px;
-        top: 0;
-        left: 0;
-      z-index: -22;
-    .creatorBg {
+    overflow: hidden;
+    .bgContainer {
       position: absolute;
-      top: -50%;
-      filter: blur(12px) grayscale(20%);
-      left: -20%;
-      // width: 550px;
-      transform: scale(1.1);
-      // width: 150%;
-      object-fit: cover;
-    }
+      height: 600px;
+      width: 600px;
+      top: 0;
+      left: 0;
+      z-index: -22;
+      .creatorBg {
+        position: absolute;
+        top: -50%;
+        filter: blur(12px) grayscale(20%);
+        left: -20%;
+        // width: 550px;
+        transform: scale(1.1);
+        // z-index: 2;
+        // width: 150%;
+        object-fit: cover;
+      }
     }
     // background: url(var(--bgCreatorImg));
     display: flex;
     justify-content: space-around;
     align-items: center;
     margin-bottom: 10px;
-    padding: 10px;
+    margin-top: -37px;
+    padding: 37px 10px 10px;
     .creator-left {
-      margin-right: 10px;
+      margin-right: 12px;
       background-color: rebeccapurple;
       width: 125px;
       height: 125px;
+      margin-top: 30px;
       .coverImg {
         height: 125px;
         object-fit: contain;
       }
     }
     .creator-right {
+      margin-top: 30px;
       height: 125px;
       display: flex;
       flex-direction: column;
@@ -154,6 +164,25 @@ export default {
         color: #fff;
       }
     }
+  }
+  .backBtnBackground {
+    display: flex;
+    align-items: center;
+    .backBtn {
+      height: 25px;
+      margin: 0px 12px;
+      display: block;
+      transform: rotate(90deg);
+    }
+    position: absolute;
+    top: 1px;
+    left: 0;
+    z-index: 1;
+    height: 37px;
+    // margin-top: 2px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 7px rgba(49, 49, 49, 0.281);
   }
 }
 </style>
